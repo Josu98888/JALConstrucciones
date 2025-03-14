@@ -17,8 +17,12 @@ class User extends Authenticatable
      *
      * @var list<string>
      */
+    // campos que se pueden asignar 
     protected $fillable = [
         'name',
+        'lastname',
+        'role',
+        'image',
         'email',
         'password',
     ];
@@ -28,6 +32,7 @@ class User extends Authenticatable
      *
      * @var list<string>
      */
+    // campos que no se deben mostrar 
     protected $hidden = [
         'password',
         'remember_token',
