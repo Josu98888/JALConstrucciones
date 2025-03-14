@@ -13,4 +13,11 @@ class Image extends Model
     protected $fillable = [
         'url',
     ];
+
+    // ORM 
+    // Relación de uno a muchos inversa (N imagenes pertenecen a 1 servicio)
+    public function service()
+    {
+        return $this->belongsTo(Service::class);
+    }
 }

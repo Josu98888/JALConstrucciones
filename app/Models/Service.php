@@ -14,4 +14,17 @@ class Service extends Model
         'name',
         'description',
     ];
+
+    // ORM
+    // Relación de uno a uno (1 servicio pertenece a 1 categoria)
+    public function category()
+    {
+        return $this->belongsTo(Category::class);
+    }
+
+    // Relación de uno a muchos (1 servicio tiene N imagenes)
+    public function images()
+    {
+        return $this->hasMany(Image::class);
+    }
 }
