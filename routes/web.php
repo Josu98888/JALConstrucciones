@@ -8,3 +8,4 @@ Route::get('/', function () {
 });
 
 Route::post('/api/login', [UserController::class, 'login']);
+Route::put('/api/user/update', [UserController::class, 'update']);
