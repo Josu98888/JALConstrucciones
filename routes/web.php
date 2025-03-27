@@ -9,3 +9,4 @@ Route::get('/', function () {
 
 Route::post('/api/login', [UserController::class, 'login']);
 Route::post('/api/user/update', [UserController::class, 'update']);
+Route::get('/api/user/avatar/{filename}', [UserController::class, 'getImage']);
