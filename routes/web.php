@@ -15,4 +15,4 @@ Route::get('/api/user/avatar/{filename}', [UserController::class, 'getImage']);
 Route::get('/api/user/detail/{id}', [UserController::class, 'detail']);
 
 //Rutas de category
-Route::resource('/api/category', CategoryController::class);
+Route::resource('/api/category', CategoryController::class)->except(['index', 'show'])->middleware('api.auth');

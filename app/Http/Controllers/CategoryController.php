@@ -18,7 +18,7 @@ class CategoryController extends Controller
         // Verifica si los datos no están vacíos
         if (!empty($params_array)) {
             $validate = Validator::make($params_array, [                    // Valida los datos recibidos
-                'name' => 'required|string' 
+                'name' => 'required|string|unique:categories,name' 
             ]);
 
             if (!$validate->fails()) {                                       // Si la validación es correcta, crea una nueva instancia de la categoría
