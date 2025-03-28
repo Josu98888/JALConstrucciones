@@ -6,9 +6,12 @@ use Illuminate\Http\Request;                           //paquete para recoger lo
 use App\Models\Category;                               //modelo de la categoria
 use Illuminate\Support\Facades\Validator;              //paquete para validar lo que llega 
 
-class CategoryController extends Controller
+class CategoryController extends Controller 
 {
-    public function index() {}
+
+    public function index() {
+
+    }
 
     public function store(Request $request)
     {
@@ -50,33 +53,21 @@ class CategoryController extends Controller
         return response()->json($data, $data['code']);                       // Retorna la respuesta en formato JSON con el código de estado correspondiente
     }
 
-    /**
-     * Display the specified resource.
-     */
     public function show(string $id)
     {
         //
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
     public function edit(string $id)
     {
         //
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
     public function update(Request $request, string $id)
     {
         //
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
     public function destroy(string $id)
     {
         //
