@@ -10,7 +10,15 @@ class CategoryController extends Controller
 {
 
     public function index() {
+        $categories = Category::all();
 
+        $data = [
+            'status' => 'success',
+            'code' => 200,
+            'categories' => $categories
+        ];
+
+        return response()->json($data, $data['code']);
     }
 
     public function store(Request $request)
