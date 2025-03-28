@@ -11,6 +11,7 @@ class Service extends Model
 
     // campos que se pueden asignar
     protected $fillable = [
+        'category_id',
         'name',
         'description',
     ];
