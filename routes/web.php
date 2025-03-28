@@ -20,5 +20,4 @@ Route::middleware([ApiAuthMiddleware::class])->group(function () {
     Route::resource('/api/category', CategoryController::class);
 
     Route::get('/api/category', [CategoryController::class, 'index'])->withoutMiddleware([ApiAuthMiddleware::class]);
-    Route::get('/api/category/{category}', [CategoryController::class, 'show'])->withoutMiddleware([ApiAuthMiddleware::class]);
 });

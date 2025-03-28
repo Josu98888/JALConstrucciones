@@ -62,17 +62,11 @@ class CategoryController extends Controller
         return response()->json($data, $data['code']);                       // Retorna la respuesta en formato JSON con el código de estado correspondiente
     }
 
-    public function show(string $id)
-    {
-        //
-    }
-
-
     public function update(Request $request, string $id)
     {
         $json = $request->input('json', null);                                 // Recibimos los datos en formato JSON desde la petición
         $params_array = json_decode($json, true);                              // Convertimos el JSON en un array asociativo
-      
+
         if (!empty($params_array)) {                                           // Verificamos si el array no está vacío
             $validate = Validator::make($params_array, [                       // Validamos los datos recibidos
                 'name' => 'required|string|unique:categories,name'
@@ -88,7 +82,7 @@ class CategoryController extends Controller
                     $data = [
                         'status' => 'success',
                         'code' => 200,
-                        'changes' => $params_array 
+                        'changes' => $params_array
                     ];
                 } else {                                                         // Si la categoría no existe, enviamos un mensaje de error
                     $data = [
@@ -117,6 +111,24 @@ class CategoryController extends Controller
 
     public function destroy(string $id)
     {
-        //
+        $category = Category::where('id', $id)->first();                        // Obtenemos la categoría a eliminar buscando por su ID en la base de datos
+
+        if (is_object($category) && !empty($category)) {                        // Verificamos si la categoría existe
+            $category->delete();                                                // Eliminamos la categoría de la base de datos
+
+            $data = [                                                            // Preparamos la respuesta indicando que la eliminación fue exitosa
+                'status' => 'success', 
+                'code' => 200, 
+                'categorie' => $category 
+            ];
+        } else {                                                                 // Si la categoría no existe, enviamos un mensaje de error
+            $data = [
+                'status' => 'error',
+                'code' => 404, 
+                'message' => 'Error, la categoría que desea eliminar no existe.'
+            ];
+        }
+
+        return response()->json($data, $data['code']);                            // Retornamos una respuesta en formato JSON con el código de estado correspondiente
     }
 }
