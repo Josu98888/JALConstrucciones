@@ -27,4 +27,5 @@ Route::middleware([ApiAuthMiddleware::class])->group(function () {
 
 // rutas del service
 Route::get('/api/service/{id}', [ServiceController::class, 'show']);
+Route::get('/api/services/getServicesByCategory/{id}', [ServiceController::class, 'getServicesByCategory']);
 

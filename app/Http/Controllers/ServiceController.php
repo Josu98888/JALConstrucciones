@@ -2,13 +2,37 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Image;                                         //modelo de la imagen
+use App\Models\Category;
 use Illuminate\Http\Request;                                  //paquete para recoger los datos por solicitud
 use Illuminate\Support\Facades\Validator;                     //paquete para validar lo que llega
 use App\Models\Service;                                       //modelo del servicio
 
 class ServiceController extends Controller
 {
+    public function getServicesByCategory($id) 
+    { 
+        $services = Service::with('images')->where('category_id', $id)->get();                  // Obtenemos los servicios que pertenecen a la categoría con el ID proporcionado con sus imagenes asociadas
+        $category = Category::where('id', $id)->first();                                        // Obtenemos la información de la categoría correspondiente
+    
+        if (!$services->isEmpty() && $category) {                                               // Verificamos si se encontraron servicios en la categoría y si la categoría existe
+            $data = [
+                'status' => 'success', 
+                'code' => 200, 
+                'category' => $category->name, 
+                'services' => $services 
+            ];
+        } else {                                                                                 // Si no hay servicios en la categoría
+            $data = [
+                'status' => 'error', 
+                'code' => 404, 
+                'message' => 'Error, no existe la categoría o no tiene servicios.' 
+            ];
+        }
+    
+        return response()->json($data, $data['code']);                                            // Retorna la respuesta en formato JSON con el código HTTP correspondiente
+    }
+    
+
     public function store(Request $request)
     {
         $json = $request->input('json', null);                                                // Recogemos los datos del formulario que nos llega en formato JSON
@@ -63,9 +87,9 @@ class ServiceController extends Controller
 
         if (!empty($params_array)) {                                                                 // Verificamos que los datos no estén vacíos
             $validate = Validator::make($params_array, [                                             // Validamos los datos enviados en el request
-                'category_id' => 'required',              
-                'name' => 'required|unique:services,name,'. $id,     
-                'description' => 'required',              
+                'category_id' => 'required',
+                'name' => 'required|unique:services,name,' . $id,
+                'description' => 'required',
             ]);
 
             if (!$validate->fails()) {                                                                // Si la validación es correcta (no hay errores)
@@ -79,7 +103,7 @@ class ServiceController extends Controller
                     $data = [                                                                         // Retornamos una respuesta exitosa con los cambios realizados
                         'status' => 'success',
                         'code' => 200,
-                        'changes' => $service 
+                        'changes' => $service
                     ];
                 } else {
                     $data = [                                                                          // Si el servicio no existe, enviamos un mensaje de error
@@ -107,24 +131,24 @@ class ServiceController extends Controller
         return response()->json($data, $data['code']);                                                  // Retornamos la respuesta en formato JSON con el código de estado correspondiente
     }
 
-    public function show(string $id) { 
+    public function show(string $id)
+    {
         $service = Service::with('images')->find($id);                                        // Busca el servicio por su ID e incluye sus imágenes en una sola consulta
-    
+
         if (!is_null($service)) {                                                              // Verifica si el servicio existe
             $data = [
-                'status' => 'success', 
-                'code' => 200, 
-                'service' => $service, 
+                'status' => 'success',
+                'code' => 200,
+                'service' => $service,
             ];
         } else {                                                                                // Si el servicio no existe
             $data = [
-                'status' => 'error', 
-                'code' => 404, 
-                'message' => 'Error, el servicio no existe.' 
+                'status' => 'error',
+                'code' => 404,
+                'message' => 'Error, el servicio no existe.'
             ];
         }
-    
+
         return response()->json($data, $data['code']);                                            // Devuelve la respuesta en formato JSON con el código de estado correspondiente
     }
-    
 }
