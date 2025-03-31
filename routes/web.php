@@ -12,9 +12,9 @@ Route::get('/', function () {
 
 // Rutas de user
 Route::post('/api/login', [UserController::class, 'login']);
-Route::post('/api/user/update', [UserController::class, 'update']);
 Route::get('/api/user/avatar/{filename}', [UserController::class, 'getImage']);
 Route::get('/api/user/detail/{id}', [UserController::class, 'detail']);
+Route::post('/api/user/update', [UserController::class, 'update']);
 
 //Rutas con el middleware de autenticación
 Route::middleware([ApiAuthMiddleware::class])->group(function () {
@@ -24,4 +24,7 @@ Route::middleware([ApiAuthMiddleware::class])->group(function () {
 
     Route::get('/api/category', [CategoryController::class, 'index'])->withoutMiddleware([ApiAuthMiddleware::class]);
 });
+
+// rutas del service
+Route::get('/api/service/{id}', [ServiceController::class, 'show']);
 

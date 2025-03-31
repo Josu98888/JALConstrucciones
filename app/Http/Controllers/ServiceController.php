@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Image;                                         //modelo de la imagen
 use Illuminate\Http\Request;                                  //paquete para recoger los datos por solicitud
 use Illuminate\Support\Facades\Validator;                     //paquete para validar lo que llega
 use App\Models\Service;                                       //modelo del servicio
@@ -105,4 +106,25 @@ class ServiceController extends Controller
 
         return response()->json($data, $data['code']);                                                  // Retornamos la respuesta en formato JSON con el código de estado correspondiente
     }
+
+    public function show(string $id) { 
+        $service = Service::with('images')->find($id);                                        // Busca el servicio por su ID e incluye sus imágenes en una sola consulta
+    
+        if (!is_null($service)) {                                                              // Verifica si el servicio existe
+            $data = [
+                'status' => 'success', 
+                'code' => 200, 
+                'service' => $service, 
+            ];
+        } else {                                                                                // Si el servicio no existe
+            $data = [
+                'status' => 'error', 
+                'code' => 404, 
+                'message' => 'Error, el servicio no existe.' 
+            ];
+        }
+    
+        return response()->json($data, $data['code']);                                            // Devuelve la respuesta en formato JSON con el código de estado correspondiente
+    }
+    
 }
