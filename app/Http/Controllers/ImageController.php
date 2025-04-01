@@ -22,7 +22,7 @@ class ImageController extends Controller
         if (!$validate->fails()) {                                                               // Verifica si la validación ha fallado
             $imageCount = Image::where('service_id', $params_array['service_id'])->count();      // Cuenta las imágenes asociadas al servicio
             $maxImages = 3;                                                                      // Número máximo de imágenes por servicio
-        
+
             if ($imageCount < $maxImages) {                                                      // Verifica que no se hayan subido más de 5 imágenes
                 $image = new Image();                                                            // Crea una nueva instancia del modelo Image            
                 $image->service_id = $params_array['service_id'];                                // Asigna el ID del servicio a la imagen
@@ -62,14 +62,14 @@ class ImageController extends Controller
 
     public function getImage($filename)
     {
-            $path = storage_path("app/public/images/{$filename}");                    // Construye la ruta completa donde se encuentra la imagen en el almacenamiento.
+        $path = storage_path("app/public/images/{$filename}");                    // Construye la ruta completa donde se encuentra la imagen en el almacenamiento.
 
-            // Verifica si el archivo existe en la ruta especificada.
-            if (File::exists($path)) {
-                $file = File::get($path);                                            // Obtiene el contenido del archivo.
-                $mimeType = File::mimeType($path);                                   // Obtiene el tipo MIME del archivo para indicar correctamente el tipo de contenido.
-        
-                return response($file, 200)->header("Content-Type", $mimeType);      // Retorna la imagen con un código de respuesta 200 y el tipo MIME correspondiente.
+        // Verifica si el archivo existe en la ruta especificada.
+        if (File::exists($path)) {
+            $file = File::get($path);                                            // Obtiene el contenido del archivo.
+            $mimeType = File::mimeType($path);                                   // Obtiene el tipo MIME del archivo para indicar correctamente el tipo de contenido.
+
+            return response($file, 200)->header("Content-Type", $mimeType);      // Retorna la imagen con un código de respuesta 200 y el tipo MIME correspondiente.
         } else {
             $data = [
                 'status' => 'error',
@@ -79,5 +79,36 @@ class ImageController extends Controller
 
             return response()->json($data, $data['code']);
         }
+    }
+
+    public function update(Request $request, string $id)
+    {
+        $image = Image::find($id);                                                        // Busca la imagen en la base de datos por su ID.
+
+        if ($request->hasFile('image')) {                                                 // Verifica si la solicitud contiene un archivo de imagen.
+            if ($image->url) {                                                            // Si la imagen ya tiene una URL almacenada, se elimina la anterior.
+                Storage::disk('images')->delete($image->url);                             // Elimina la imagen anterior del almacenamiento.
+            }
+            $imageFile = $request->file('image');                                         // Obtiene el archivo de imagen de la solicitud.
+            $image_name = time() . '_' . $imageFile->getClientOriginalName();             // Genera un nombre único para la nueva imagen.
+            Storage::disk('images')->put($image_name, File::get($imageFile));             // Guarda la nueva imagen en el almacenamiento.
+            $image->url = $image_name;                                                    // Actualiza la URL de la imagen en la base de datos.
+            $image->save();                                                               // Guarda los cambios en la base de datos.
+
+            $data = [                                                                     // Respuesta en caso de éxito.
+                'status' => 'success',
+                'code' => 200,
+                'message' => 'Éxito, imagen subida correctamente.',
+                'image' => $image
+            ];
+        } else {                                                                           // Si no se envió una imagen en la solicitud, devuelve un error.
+            $data = [
+                'status' => 'error',
+                'code' => 400,
+                'message' => 'Error al subir la imagen.'
+            ];
+        }
+
+        return response()->json($data, $data['code']);                                     // Retorna la respuesta en formato JSON con el código de estado correspondiente.
     }
 }
