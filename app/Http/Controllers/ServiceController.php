@@ -175,4 +175,28 @@ class ServiceController extends Controller
 
         return response()->json($data, $data['code']);                                                        // Devuelve la respuesta en formato JSON con el código de estado correspondiente
     }
+
+    public function destroy(string $id)
+    { 
+        $service = Service::find($id);                                                // Buscamos el servicio en la base de datos por su ID
+        
+        if (!is_null($service)) {                                                     // Verificamos si el servicio existe
+            $service->delete();                                                       // Eliminamos el servicio de la base de datos
+            $data = [                                                                 // Respuesta de éxito si el servicio se eliminó correctamente
+                'status' => 'success', 
+                'code' => 200, 
+                'message' => 'Servicio eliminado correctamente.', 
+                'serviceRemoved' => $service 
+            ];
+        } else { 
+            $data = [                                                                  // Respuesta de error si el servicio no existe
+                'status' => 'error', 
+                'code' => 404, 
+                'message' => 'Error, el servicio no existe.' 
+            ];
+        }
+    
+        return response()->json($data, $data['code']);                                  // Retornamos la respuesta en formato JSON con el código HTTP correspondiente
+    }
+    
 }

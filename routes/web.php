@@ -18,11 +18,15 @@ Route::post('/api/user/update', [UserController::class, 'update']);
 
 //Rutas con el middleware de autenticación
 Route::middleware([ApiAuthMiddleware::class])->group(function () {
-    Route::resource('/api/category', CategoryController::class);
+    // rutas del service
     Route::post('/api/service/store', [ServiceController::class, 'store']);
     Route::put('/api/service/update/{id}', [ServiceController::class, 'update']);
+    Route::delete('/api/service/delete/{id}', [ServiceController::class, 'destroy']);
 
+    // rutas de categorias
     Route::get('/api/category', [CategoryController::class, 'index'])->withoutMiddleware([ApiAuthMiddleware::class]);
+    Route::resource('/api/category', CategoryController::class);
+
 });
 
 // rutas del service
