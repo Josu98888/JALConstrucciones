@@ -11,6 +11,7 @@ class Image extends Model
 
     // campos que se puden asignar
     protected $fillable = [
+        'service_id',
         'url',
     ];
 

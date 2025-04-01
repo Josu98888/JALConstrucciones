@@ -27,7 +27,9 @@ Route::middleware([ApiAuthMiddleware::class])->group(function () {
     // rutas de categorias
     Route::resource('/api/category', CategoryController::class);
     Route::get('/api/category', [CategoryController::class, 'index'])->withoutMiddleware([ApiAuthMiddleware::class]);
+
     // Rutas de las imagenes
+    Route::post('/api/image/store', [ImageController::class, 'store']);
 });
 
 
