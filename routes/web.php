@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\ImageController;
 use App\Http\Controllers\ServiceController;
 use App\Http\Controllers\UserController;
 use App\Http\Middleware\ApiAuthMiddleware;
@@ -26,6 +27,9 @@ Route::middleware([ApiAuthMiddleware::class])->group(function () {
     // rutas de categorias
     Route::get('/api/category', [CategoryController::class, 'index'])->withoutMiddleware([ApiAuthMiddleware::class]);
     Route::resource('/api/category', CategoryController::class);
+
+    // Rutas de las imagenes
+    Route::resource('/api/image', [ImageController::class]);
 
 });
 

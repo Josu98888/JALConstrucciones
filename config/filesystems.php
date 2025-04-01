@@ -55,6 +55,14 @@ return [
             'max_size'  => 1024 * 1024 * 200,
         ],
 
+        'images' => [
+            'driver' => 'local',
+            'root' => storage_path('app/public/images'),
+            'url' => env('APP_URL').'/storage',
+            'visibility' => 'public',
+            'max_size'  => 1024 * 1024 * 200,
+        ],
+
         's3' => [
             'driver' => 's3',
             'key' => env('AWS_ACCESS_KEY_ID'),
