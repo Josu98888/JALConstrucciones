@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;                           //paquete para recoger los datos por solicitud
 use App\Models\Category;                               //modelo de la categoria
+use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;              //paquete para validar lo que llega 
 
 class CategoryController extends Controller
@@ -24,42 +26,64 @@ class CategoryController extends Controller
 
     public function store(Request $request)
     {
-        $json = $request->input('json', null);                               // Obtiene los datos en formato JSON de la solicitud
-        $params_array = json_decode($json, true);                            // Decodifica el JSON y lo convierte en un array asociativo
+        $json = $request->input('json', null);                                                   // Obtiene los datos en formato JSON de la solicitud
+        $params_array = json_decode($json, true);                                                // Decodifica el JSON y lo convierte en un array asociativo
 
         // Verifica si los datos no están vacíos
         if (!empty($params_array)) {
-            $validate = Validator::make($params_array, [                    // Valida los datos recibidos
-                'name' => 'required|string|unique:categories,name'
+            $validate = Validator::make($params_array, [                                         // Valida los datos recibidos
+                'name' => 'required|string|unique:categories,name',
+                'description' => 'required|string',
+                'image' => 'image|mimes:jpg,png,jpeg,gif'
             ]);
 
-            if (!$validate->fails()) {                                       // Si la validación es correcta, crea una nueva instancia de la categoría
-                $category = new Category();                                  // Creá la categoria
-                $category->name = $params_array['name'];                     // Asigna el nombre de la categoría
-                $category->save();                                           // Guarda la categoría en la base de datos
+            if (!$validate->fails()) {                                                           // Si la validación es correcta, crea una nueva instancia de la categoría
+                $quantityCategories = Category::count();                                         // Cuenta la cantidad de categorías en la base de datos
+                $limitCategories = 8;                                                            // Límite de categorías permitidas
+                
+                if ($quantityCategories <= $limitCategories) {                                   // Verifica si se ha alcanzado el límite de categorías
+                    $category = new Category();                                                  // Creá la categoria
+                    $category->name = $params_array['name'];                                     // Asigna el nombre de la categoría
+                    $category->description = $params_array['description'];                       // Asigna la descripción de la categoría
 
-                $data = [                                                    // Respuesta exitosa con los datos de la categoría creada
-                    'status' => 'success',
-                    'code' => 200,
-                    'message' => 'Éxito al crear la categoría.',
-                    'categorie' => $category
-                ];
-            } else {                                                          // Si la validación falla, devuelve un mensaje de error
+                    if ($request->hasFile('image')) {                                            // Verifica si se ha enviado una imagen
+                        $image = $request->file('image');                                        // Obtiene la imagen                   
+                        $image_name = time() . '_' . $image->getClientOriginalName();            // Asigna un nombre único
+                        Storage::disk('categories')->put($image_name, File::get($image));        // Guarda nueva imagen
+                        $category->image = $image_name;                                          // Guardar la ruta relativa en la base de datos
+                    }
+                    $category->save();                                                           // Guarda la categoría en la base de datos
+
+                    $data = [                                                                    // Respuesta exitosa con los datos de la categoría creada
+                        'status' => 'success',
+                        'code' => 200,
+                        'message' => 'Éxito al crear la categoría.',
+                        'categorie' => $category
+                    ];
+                } else {
+                    $data = [                                                                    // Respuesta en caso de haber alcanzado el límite de categorías 
+                        'status' => 'error',
+                        'code' => 400,
+                        'message' => 'Error, no se pueden crear mas de 8 categorias.'
+                    ];
+                }
+            } else {                                                                             // Si la validación falla, devuelve un mensaje de error
                 $data = [
                     'status' => 'error',
                     'code' => 404,
-                    'message' => 'Error al crear la categoría.'
+                    'message' => 'Error al crear la categoría.',
+                    'errors' => $validate->errors()
                 ];
             }
         } else {
-            $data = [                                                        // Si los datos están vacíos, devuelve un mensaje de error
+            $data = [                                                                             // Si los datos están vacíos, devuelve un mensaje de error
                 'status' => 'error',
                 'code' => 404,
                 'message' => 'Error al enviar la categoría.'
             ];
         }
 
-        return response()->json($data, $data['code']);                       // Retorna la respuesta en formato JSON con el código de estado correspondiente
+        return response()->json($data, $data['code']);                                            // Retorna la respuesta en formato JSON con el código de estado correspondiente
     }
 
     public function update(Request $request, string $id)
@@ -117,14 +141,14 @@ class CategoryController extends Controller
             $category->delete();                                                // Eliminamos la categoría de la base de datos
 
             $data = [                                                            // Preparamos la respuesta indicando que la eliminación fue exitosa
-                'status' => 'success', 
-                'code' => 200, 
-                'categorie' => $category 
+                'status' => 'success',
+                'code' => 200,
+                'categorie' => $category
             ];
         } else {                                                                 // Si la categoría no existe, enviamos un mensaje de error
             $data = [
                 'status' => 'error',
-                'code' => 404, 
+                'code' => 404,
                 'message' => 'Error, la categoría que desea eliminar no existe.'
             ];
         }
