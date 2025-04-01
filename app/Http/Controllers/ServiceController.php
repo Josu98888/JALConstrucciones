@@ -9,29 +9,28 @@ use App\Models\Service;                                       //modelo del servi
 
 class ServiceController extends Controller
 {
-    public function getServicesByCategory($id) 
-    { 
+    public function getServicesByCategory($id)
+    {
         $services = Service::with('images')->where('category_id', $id)->get();                  // Obtenemos los servicios que pertenecen a la categoría con el ID proporcionado con sus imagenes asociadas
         $category = Category::where('id', $id)->first();                                        // Obtenemos la información de la categoría correspondiente
-    
+
         if (!$services->isEmpty() && $category) {                                               // Verificamos si se encontraron servicios en la categoría y si la categoría existe
             $data = [
-                'status' => 'success', 
-                'code' => 200, 
-                'category' => $category->name, 
-                'services' => $services 
+                'status' => 'success',
+                'code' => 200,
+                'category' => $category->name,
+                'services' => $services
             ];
         } else {                                                                                 // Si no hay servicios en la categoría
             $data = [
-                'status' => 'error', 
-                'code' => 404, 
-                'message' => 'Error, no existe la categoría o no tiene servicios.' 
+                'status' => 'error',
+                'code' => 404,
+                'message' => 'Error, no existe la categoría o no tiene servicios.'
             ];
         }
-    
+
         return response()->json($data, $data['code']);                                            // Retorna la respuesta en formato JSON con el código HTTP correspondiente
     }
-    
 
     public function store(Request $request)
     {
@@ -46,6 +45,7 @@ class ServiceController extends Controller
                 'category_id' => 'required',
                 'name' => 'required|unique:services',
                 'description' => 'required',
+                'outstanding' => 'required',
             ]);
 
             // Si la validación es exitosa (no hay errores)
@@ -54,6 +54,7 @@ class ServiceController extends Controller
                 $service->category_id = $params_array['category_id'];                           // Asignamos el ID de la categoría
                 $service->name = $params_array['name'];                                         // Asignamos el nombre del servicio
                 $service->description = $params_array['description'];                           // Asignamos la descripción del servicio
+                $service->outstanding = $params_array['outstanding'];                           // Asignamos si el servicio es destacado o no
                 $service->save();                                                               // Guardamos el nuevo servicio en la base de datos
 
                 $data = [                                                                       // Preparamos la respuesta con estado de éxito
@@ -90,6 +91,7 @@ class ServiceController extends Controller
                 'category_id' => 'required',
                 'name' => 'required|unique:services,name,' . $id,
                 'description' => 'required',
+                'outstanding' => 'required',
             ]);
 
             if (!$validate->fails()) {                                                                // Si la validación es correcta (no hay errores)
@@ -98,6 +100,7 @@ class ServiceController extends Controller
                     $service->category_id = $params_array['category_id'];                             // Asignamos el ID de la categoría
                     $service->name = $params_array['name'];                                           // Asignamos el nombre del servicio
                     $service->description = $params_array['description'];                             // Asignamos la descripción del servicio
+                    $service->outstanding = $params_array['outstanding'];                             // Asignamos si el servicio es destacado o no
                     $service->save();                                                                 // Guardamos los cambios en la base de datos
 
                     $data = [                                                                         // Retornamos una respuesta exitosa con los cambios realizados
@@ -150,5 +153,26 @@ class ServiceController extends Controller
         }
 
         return response()->json($data, $data['code']);                                            // Devuelve la respuesta en formato JSON con el código de estado correspondiente
+    }
+
+    public function outstanding()
+    {
+        $servicesOutstanding = Service::with('images')->where('outstanding', 1)->inRandomOrder()->limit(5)->get();          // Obtiene los servicios destacados con sus imágenes asociadas
+
+        if (!$servicesOutstanding->isEmpty()) {                                                            // Verifica si existen servicios destacados
+            $data = [
+                'status' => 'success',
+                'code' => 200,
+                'services' => $servicesOutstanding
+            ];
+        } else {                                                                                            // Si no hay servicios destacados
+            $data = [
+                'status' => 'error',
+                'code' => 404,
+                'message' => 'Error, no hay servicios destacados.'
+            ];
+        }
+
+        return response()->json($data, $data['code']);                                                        // Devuelve la respuesta en formato JSON con el código de estado correspondiente
     }
 }
