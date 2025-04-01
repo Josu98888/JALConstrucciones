@@ -36,6 +36,9 @@ Route::middleware([ApiAuthMiddleware::class])->group(function () {
 
 });
 
+// rutas de categorias
+Route::get('/api/category/getImage/{filename}', [CategoryController::class, 'getImage']);
+
 // rutas del service
 Route::get('/api/service/{id}', [ServiceController::class, 'show']);
 Route::get('/api/services/getServicesByCategory/{id}', [ServiceController::class, 'getServicesByCategory']);

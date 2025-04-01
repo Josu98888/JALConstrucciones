@@ -148,6 +148,27 @@ class CategoryController extends Controller
         return response()->json($data, $data['code']);                     // Devolvemos una respuesta JSON con el código de estado correspondiente
     }
 
+    public function getImage($filename)
+    {
+        $path = storage_path("app/public/categories/{$filename}");                    // Construye la ruta completa donde se encuentra la imagen en el almacenamiento.
+
+        // Verifica si el archivo existe en la ruta especificada.
+        if (File::exists($path)) {
+            $file = File::get($path);                                            // Obtiene el contenido del archivo.
+            $mimeType = File::mimeType($path);                                   // Obtiene el tipo MIME del archivo para indicar correctamente el tipo de contenido.
+
+            return response($file, 200)->header("Content-Type", $mimeType);      // Retorna la imagen con un código de respuesta 200 y el tipo MIME correspondiente.
+        } else {
+            $data = [
+                'status' => 'error',
+                'code' => 400,
+                'message' => 'La imagen no existe.'
+            ];
+
+            return response()->json($data, $data['code']);
+        }
+    }
+
     public function destroy(string $id)
     {
         $category = Category::where('id', $id)->first();                        // Obtenemos la categoría a eliminar buscando por su ID en la base de datos
