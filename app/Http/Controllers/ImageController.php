@@ -111,4 +111,27 @@ class ImageController extends Controller
 
         return response()->json($data, $data['code']);                                     // Retorna la respuesta en formato JSON con el código de estado correspondiente.
     }
+
+    public function destroy(string $id) {
+        $image = Image::find($id);                                        //Busca en la BD la imagen pr su id
+
+        if(!is_null($image)) {                                             //Verifica si la imagen existe
+            $image->delete();                                              //Elimina laimagen
+
+            $data = [                                                      //Resapuesta de exito
+                'status' => 'success',
+                'code' => 200,
+                'message' => 'Exito al eliminar la imagen.',
+                'imageRemoved' => $image
+            ];
+        } else {
+            $data = [                                                       //Respuesta de error
+                'status' => 'error',
+                'code' => 404,
+                'message' => 'Error, la imagen no existe.'
+            ];
+        }
+
+        return response()->json($data, $data['code']);                       //Retorna la respuesta en formato json con el codigo de estado correspondiente
+    }
 }

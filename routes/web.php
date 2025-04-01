@@ -30,7 +30,9 @@ Route::middleware([ApiAuthMiddleware::class])->group(function () {
 
     // Rutas de las imagenes
     Route::post('/api/image/store', [ImageController::class, 'store']);
-    Route::post('/api/image/{id}', [ImageController::class, 'update']);
+    Route::post('/api/image/update/{id}', [ImageController::class, 'update']);
+    Route::delete('/api/image/delete/{id}', [ImageController::class, 'destroy']);
+
 });
 
 // rutas del service
