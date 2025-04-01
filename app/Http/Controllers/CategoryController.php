@@ -40,7 +40,7 @@ class CategoryController extends Controller
             if (!$validate->fails()) {                                                           // Si la validación es correcta, crea una nueva instancia de la categoría
                 $quantityCategories = Category::count();                                         // Cuenta la cantidad de categorías en la base de datos
                 $limitCategories = 8;                                                            // Límite de categorías permitidas
-                
+
                 if ($quantityCategories <= $limitCategories) {                                   // Verifica si se ha alcanzado el límite de categorías
                     $category = new Category();                                                  // Creá la categoria
                     $category->name = $params_array['name'];                                     // Asigna el nombre de la categoría
@@ -93,7 +93,9 @@ class CategoryController extends Controller
 
         if (!empty($params_array)) {                                           // Verificamos si el array no está vacío
             $validate = Validator::make($params_array, [                       // Validamos los datos recibidos
-                'name' => 'required|string|unique:categories,name'
+                'name' => 'required|string|unique:categories,name,' . $id,
+                'description' => 'required|string',
+                'image' => 'image|mimes:jpg,png,jpeg,gif'
             ]);
 
             if (!$validate->fails()) {                                          // Si la validación es correcta
@@ -102,11 +104,24 @@ class CategoryController extends Controller
                 $category = Category::where('id', $id)->first();                // Buscamos la categoría en la base de datos por su ID
 
                 if (!empty($category) && is_object($category)) {                // Si la categoría existe
+                    
+                    if ($request->hasFile('image')) {
+
+                        if ($category->image) {
+                            Storage::disk('categories')->delete($category->image);               // Elimina imagen anterior si existe
+                        }
+                        $image = $request->file('image');
+                        $image_name = time() . '_' . $image->getClientOriginalName();   // Asigna un nombre único
+                        Storage::disk('categories')->put($image_name, File::get($image));    // Guarda nueva imagen
+                        $category->image = $image_name;                                     // Guardar la ruta relativa en la base de datos
+                    }
                     $category->update($params_array);                           // Actualizamos la categoría con los datos proporcionados
+                    $category->save();                                          // Guardamos los cambios en la base de datos
+
                     $data = [
                         'status' => 'success',
                         'code' => 200,
-                        'changes' => $params_array
+                        'changes' => $category
                     ];
                 } else {                                                         // Si la categoría no existe, enviamos un mensaje de error
                     $data = [

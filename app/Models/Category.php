@@ -11,7 +11,9 @@ class Category extends Model
 
     // campos que se pueden asignar
     protected $fillable = [
-        'name'
+        'name',
+        'description',
+        'image'
     ];
 
     // ORM
