@@ -32,9 +32,11 @@ Route::middleware([ApiAuthMiddleware::class])->group(function () {
     Route::post('/api/image/store', [ImageController::class, 'store']);
 });
 
-
 // rutas del service
 Route::get('/api/service/{id}', [ServiceController::class, 'show']);
 Route::get('/api/services/getServicesByCategory/{id}', [ServiceController::class, 'getServicesByCategory']);
 Route::get('/api/services/outstanding', [ServiceController::class, 'outstanding']);
+
+// Ruta de las imagenes
+Route::get('/api/image/{filename}', [ImageController::class, 'getImage']);
 

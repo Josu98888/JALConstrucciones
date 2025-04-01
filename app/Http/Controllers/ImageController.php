@@ -59,4 +59,25 @@ class ImageController extends Controller
 
         return response()->json($data, $data['code']);                                     // Retorna la respuesta en formato JSON con el código de estado correspondient
     }
+
+    public function getImage($filename)
+    {
+            $path = storage_path("app/public/images/{$filename}");                    // Construye la ruta completa donde se encuentra la imagen en el almacenamiento.
+
+            // Verifica si el archivo existe en la ruta especificada.
+            if (File::exists($path)) {
+                $file = File::get($path);                                            // Obtiene el contenido del archivo.
+                $mimeType = File::mimeType($path);                                   // Obtiene el tipo MIME del archivo para indicar correctamente el tipo de contenido.
+        
+                return response($file, 200)->header("Content-Type", $mimeType);      // Retorna la imagen con un código de respuesta 200 y el tipo MIME correspondiente.
+        } else {
+            $data = [
+                'status' => 'error',
+                'code' => 400,
+                'message' => 'La imagen no existe.'
+            ];
+
+            return response()->json($data, $data['code']);
+        }
+    }
 }
