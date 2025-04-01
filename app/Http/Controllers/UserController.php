@@ -7,8 +7,8 @@ use Illuminate\Support\Facades\Validator;  //paquete para validar lo que llega
 use App\Models\User;                       //modelo del usuario
 use Illuminate\Support\Facades\Hash;       // paquete para cifrar la contraseña
 use App\Helpers\JwtAuth;                   //helper
-use Illuminate\Support\Facades\File;
-use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\File;       //paquete para trabajar con archivos
+use Illuminate\Support\Facades\Storage;    //paquete para almacenar archivos
 
 class UserController extends Controller
 {

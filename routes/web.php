@@ -25,13 +25,11 @@ Route::middleware([ApiAuthMiddleware::class])->group(function () {
     Route::delete('/api/service/delete/{id}', [ServiceController::class, 'destroy']);
 
     // rutas de categorias
-    Route::get('/api/category', [CategoryController::class, 'index'])->withoutMiddleware([ApiAuthMiddleware::class]);
     Route::resource('/api/category', CategoryController::class);
-
+    Route::get('/api/category', [CategoryController::class, 'index'])->withoutMiddleware([ApiAuthMiddleware::class]);
     // Rutas de las imagenes
-    Route::resource('/api/image', [ImageController::class]);
-
 });
+
 
 // rutas del service
 Route::get('/api/service/{id}', [ServiceController::class, 'show']);
