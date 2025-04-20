@@ -52,7 +52,14 @@ class UserController extends Controller
             $getToken = isset($params->getToken) ? $params->getToken : null;           // se verifica si se ha enviado el token 
             $signup = $JwtAuth->signup($params->email, $getToken);  // Llamada a la función de autenticación para generar el token
 
-            return response()->json($signup, 200);
+            $data = [
+                'status' => 'success',
+                'code' => 200,
+                'message' => 'El usuario se ha logueado correctamente.',
+                'token' => $signup,
+                'user' => $user
+            ];
+            return response()->json($data, $data['code']);                               // Retorna la respuesta en formato JSON con el código de estado correspondiente.
         }
 
         // Si faltan las credenciales
@@ -66,27 +73,24 @@ class UserController extends Controller
     public function update(Request $request)
     {
         $token = $request->header('Authorization');                    //obtiene el token del encabezado de la solicitud
-
         $jwtAuth = new JwtAuth();                        
         $checkToken = $jwtAuth->checkToken($token);                    // se crea una instancia de JwtAuth y se verifica el token 
-        $json = $request->input('json', null);                         // Recogemos los datos del formulario en formato JSON
-        $params_array = json_decode($json, true);                      // creo un array con los datos y los decodifico
-
+        
         // verifica si el token es válido
         if ($checkToken) {   
             $user = $jwtAuth->checkToken($token, true);                          // obtener el user identificado
             $id = $user->sub;                                                    // obtiene el ID del usuario desde el token
             $user = User::findOrFail($id);                                       // obiene el usuario en la base de datos desde el id
 
-            $validate = Validator::make($params_array, [                         // valida los datos recibidos
+            $validate = Validator::make($request->all(), [                         // valida los datos recibidos
                 'name' => 'required',
                 'lastname' => 'required',
                 'email' => 'email|unique:users,email,' . $user->id,
-                'image' => 'image|mimes:jpg,png,jpeg,gif|max:2048'
+                'image' => 'nullable|image|mimes:jpg,png,jpeg,gif|max:2048'
             ]);
 
             if (!$validate->fails()) {
-                $user->update($params_array);                                      // actualiza los datos del usuario (excepto la imagen)
+                $user->fill($request->except(['image']));                                     // actualiza los datos del usuario (excepto la imagen)
                 
 
                 // si el user cambia la imagen
@@ -127,6 +131,7 @@ class UserController extends Controller
 
         return response()->json($data, $data['code']);
     }
+    
 
     public function getImage($filename)
     {

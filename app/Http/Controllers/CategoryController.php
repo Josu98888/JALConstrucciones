@@ -26,12 +26,7 @@ class CategoryController extends Controller
 
     public function store(Request $request)
     {
-        $json = $request->input('json', null);                                                   // Obtiene los datos en formato JSON de la solicitud
-        $params_array = json_decode($json, true);                                                // Decodifica el JSON y lo convierte en un array asociativo
-
-        // Verifica si los datos no están vacíos
-        if (!empty($params_array)) {
-            $validate = Validator::make($params_array, [                                         // Valida los datos recibidos
+            $validate = Validator::make($request->all(), [                                         // Valida los datos recibidos
                 'name' => 'required|string|unique:categories,name',
                 'description' => 'required|string',
                 'image' => 'image|mimes:jpg,png,jpeg,gif'
@@ -43,8 +38,8 @@ class CategoryController extends Controller
 
                 if ($quantityCategories <= $limitCategories) {                                   // Verifica si se ha alcanzado el límite de categorías
                     $category = new Category();                                                  // Creá la categoria
-                    $category->name = $params_array['name'];                                     // Asigna el nombre de la categoría
-                    $category->description = $params_array['description'];                       // Asigna la descripción de la categoría
+                    $category->name =$request->input('name');;                                     // Asigna el nombre de la categoría
+                    $category->description = $request->input('description');;                       // Asigna la descripción de la categoría
 
                     if ($request->hasFile('image')) {                                            // Verifica si se ha enviado una imagen
                         $image = $request->file('image');                                        // Obtiene la imagen                   
@@ -75,13 +70,7 @@ class CategoryController extends Controller
                     'errors' => $validate->errors()
                 ];
             }
-        } else {
-            $data = [                                                                             // Si los datos están vacíos, devuelve un mensaje de error
-                'status' => 'error',
-                'code' => 404,
-                'message' => 'Error al enviar la categoría.'
-            ];
-        }
+        
 
         return response()->json($data, $data['code']);                                            // Retorna la respuesta en formato JSON con el código de estado correspondiente
     }
