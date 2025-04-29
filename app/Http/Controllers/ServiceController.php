@@ -50,23 +50,35 @@ class ServiceController extends Controller
 
             // Si la validación es exitosa (no hay errores)
             if (!$validate->fails()) {
-                $service = new Service();                                                       // Crear una nueva instancia del modelo 'Service'
-                $service->category_id = $params_array['category_id'];                           // Asignamos el ID de la categoría
-                $service->name = $params_array['name'];                                         // Asignamos el nombre del servicio
-                $service->description = $params_array['description'];                           // Asignamos la descripción del servicio
-                $service->outstanding = $params_array['outstanding'];                           // Asignamos si el servicio es destacado o no
-                $service->save();                                                               // Guardamos el nuevo servicio en la base de datos
+                $servicesCount = Service::where('category_id', $params_array['category_id'])->count();             // Contamos la cantidad de servicios en la categoría')
+                $limitServices = 10;                                                                               // Definimos el límite de servicios por categoría
 
-                $data = [                                                                       // Preparamos la respuesta con estado de éxito
-                    'status' => 'success',
-                    'code' => 200,
-                    'product' => $service
-                ];
+                if ($servicesCount <= $limitServices) {                                                            // Verificamos si la categoría tiene menos de 10 servicios 
+                    $service = new Service();                                                                      // Crear una nueva instancia del modelo 'Service'
+                    $service->category_id = $params_array['category_id'];                                          // Asignamos el ID de la categoría
+                    $service->name = $params_array['name'];                                                        // Asignamos el nombre del servicio
+                    $service->description = $params_array['description'];                                          // Asignamos la descripción del servicio
+                    $service->outstanding = $params_array['outstanding'];                                          // Asignamos si el servicio es destacado o no
+                    $service->save();                                                                              // Guardamos el nuevo servicio en la base de datos
+
+                    $data = [                                                                                      // Preparamos la respuesta con estado de éxito
+                        'status' => 'success',
+                        'code' => 200,
+                        'service' => $service
+                    ];
+                } else {
+                    $data = [                                                                                  // Si la categoría tiene más de 10 servicios, devolvemos un mensaje de error
+                        'status' => 'error',
+                        'code' => 404,
+                        'message' => 'Error, la categoría ya tiene 10 servicios.'
+                    ];
+                }
             } else {
                 $data = [                                                                        // Si la validación falla, devolvemos un mensaje de error
                     'status' => 'error',
                     'code' => 404,
-                    'message' => 'Error al enviar los datos, no se pudo crear el producto.'
+                    'message' => 'Error al enviar los datos, no se pudo crear el servicio.',
+                    'error' => $validate->errors()
                 ];
             }
         } else {
@@ -177,26 +189,25 @@ class ServiceController extends Controller
     }
 
     public function destroy(string $id)
-    { 
+    {
         $service = Service::find($id);                                                // Buscamos el servicio en la base de datos por su ID
-        
+
         if (!is_null($service)) {                                                     // Verificamos si el servicio existe
             $service->delete();                                                       // Eliminamos el servicio de la base de datos
             $data = [                                                                 // Respuesta de éxito si el servicio se eliminó correctamente
-                'status' => 'success', 
-                'code' => 200, 
-                'message' => 'Servicio eliminado correctamente.', 
-                'serviceRemoved' => $service 
+                'status' => 'success',
+                'code' => 200,
+                'message' => 'Servicio eliminado correctamente.',
+                'serviceRemoved' => $service
             ];
-        } else { 
+        } else {
             $data = [                                                                  // Respuesta de error si el servicio no existe
-                'status' => 'error', 
-                'code' => 404, 
-                'message' => 'Error, el servicio no existe.' 
+                'status' => 'error',
+                'code' => 404,
+                'message' => 'Error, el servicio no existe.'
             ];
         }
-    
+
         return response()->json($data, $data['code']);                                  // Retornamos la respuesta en formato JSON con el código HTTP correspondiente
     }
-    
 }

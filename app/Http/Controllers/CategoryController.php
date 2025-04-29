@@ -59,7 +59,7 @@ class CategoryController extends Controller
                     $data = [                                                                    // Respuesta en caso de haber alcanzado el límite de categorías 
                         'status' => 'error',
                         'code' => 400,
-                        'message' => 'Error, no se pueden crear mas de 8 categorias.'
+                        'message' => 'Error, no se pueden crear más de 8 categorias.'
                     ];
                 }
             } else {                                                                             // Si la validación falla, devuelve un mensaje de error

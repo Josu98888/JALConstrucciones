@@ -12,20 +12,17 @@ class ImageController extends Controller
 {
     public function store(Request $request)
     {
-        $json = $request->input('json', null);                                                  // Obtiene el JSON enviado en la solicitud
-        $params_array = json_decode($json, true);                                               // Decodifica el JSON a un array asociativo
-
-        $validate = Validator::make($params_array, [                                            // Valida que el campo 'service_id' esté presente
+        $validate = Validator::make($request->all(), [                                            // Valida que el campo 'service_id' esté presente
             'service_id' => 'required',
         ]);
 
         if (!$validate->fails()) {                                                               // Verifica si la validación ha fallado
-            $imageCount = Image::where('service_id', $params_array['service_id'])->count();      // Cuenta las imágenes asociadas al servicio
+            $imageCount = Image::where('service_id', $request->input('service_id'))->count();      // Cuenta las imágenes asociadas al servicio
             $maxImages = 3;                                                                      // Número máximo de imágenes por servicio
 
             if ($imageCount < $maxImages) {                                                      // Verifica que no se hayan subido más de 5 imágenes
                 $image = new Image();                                                            // Crea una nueva instancia del modelo Image            
-                $image->service_id = $params_array['service_id'];                                // Asigna el ID del servicio a la imagen
+                $image->service_id = $request->input('service_id');                                // Asigna el ID del servicio a la imagen
 
                 if ($request->hasFile('image')) {                                                // Verifica si se ha enviado un archivo de imagen    
                     $imageFile = $request->file('image');                                        // Obtiene el archivo de imagen    
