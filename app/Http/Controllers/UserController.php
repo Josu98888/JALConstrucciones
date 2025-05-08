@@ -117,6 +117,7 @@ class UserController extends Controller
                 $data = [
                     'status' => 'error',
                     'code' => '400',
+                    'errors' => $validate->errors() ,
                     'message' => 'Error al ingresar los datos.'
                 ];
             }
