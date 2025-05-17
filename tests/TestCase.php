@@ -8,14 +8,10 @@ use Illuminate\Foundation\Testing\TestCase as BaseTestCase;
 
 abstract class TestCase extends BaseTestCase
 {
-    protected function getJwtTokenForUser(User $user = null)
+    protected function getJwtTokenForUser(User $user)
     {
-        $user = $user ?: User::factory()->create([
-            'password' => bcrypt('password123'),
-        ]);
-
         $jwt = new JwtAuth();
-        $token = $jwt->signup($user->email, 'password123', true); // true para recibir el token como string
+        $token = $jwt->signup($user->email, true); // true para recibir el token como string
 
         return $token;
     }
