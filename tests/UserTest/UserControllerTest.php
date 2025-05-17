@@ -61,5 +61,12 @@ class UserControllerTest extends TestsTestCase
         // verificación
         // $response->dump();
         $response->assertStatus(200);
+        $response->assertJson([
+            'user' => [
+                'name' => 'Test User Updated',
+                'lastname' => 'Test Lastname Updated',
+                'email' => 'testUserUpdated@email.com',
+            ]
+        ]);
     }
 }
