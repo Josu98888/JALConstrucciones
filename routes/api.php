@@ -15,7 +15,7 @@ Route::get('/user', function (Request $request) {
 // Rutas de user
 Route::post('/login', [UserController::class, 'login']);
 Route::get('/user/avatar/{filename}', [UserController::class, 'getImage']);
-Route::get('/api/user/detail/{id}', [UserController::class, 'detail']);
+Route::get('/user/detail/{id}', [UserController::class, 'detail']);
 Route::post('/user/update', [UserController::class, 'update']);
 
 //Rutas con el middleware de autenticación

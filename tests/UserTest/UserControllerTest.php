@@ -90,4 +90,22 @@ class UserControllerTest extends TestsTestCase
         // limpieza
         Storage::disk('public')->delete("users/{$filename}");
     }
+
+    #[Test]
+    public function detail() {
+        // preparacion
+        $id = $this->user->id;
+
+        // llamda
+        $response = $this->getJson("/api/user/detail/$id");
+
+        // verificacion
+        $response->dump();
+        $response->assertStatus(200);
+        $response->assertJson([
+            'user' => [
+                'id' => $id,
+            ]
+        ]);
+    }
 }
