@@ -76,4 +76,26 @@ class CategoryControllerTest extends TestCase
             'description' => 'Category Test Description Updated',
         ]);
     }
+
+    #[Test]
+    public function index() {
+        // llamada
+        $response = $this->getJson('api/category');
+
+        // verificacion
+        $response->dump();
+        $response->assertStatus(200);
+        $response->assertJsonStructure([
+            'categories' => [
+                '*' => [
+                    'id',
+                    'name',
+                    'description',
+                    'image',
+                    'created_at',
+                    'updated_at'
+                ]
+            ]
+        ]);
+    }
 }
