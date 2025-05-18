@@ -88,8 +88,9 @@ class ServiceControllerTest extends TestCase
         ]);
     }
 
-    #[Test] 
-    public function show() {
+    #[Test]
+    public function show()
+    {
         // preparacion
         $id = $this->service->id;
 
@@ -107,5 +108,26 @@ class ServiceControllerTest extends TestCase
             ]
         ]);
     }
-    
+
+    #[Test]
+    public function destroy()
+    {
+        // preparacion
+        $id = $this->service->id;
+
+        // llamada
+        $response = $this->withHeaders([
+            'Authorization' => $this->token
+        ])->delete('/api/service/delete/' . $id);
+
+        // verificacion
+        $response->dump();
+        $response->assertStatus(200);
+        $response->assertJson([
+            'message' => 'Servicio eliminado correctamente.',
+        ]);
+        $this->assertDatabaseMissing('services', [
+            'id' => $id
+        ]);
+    }
 }
