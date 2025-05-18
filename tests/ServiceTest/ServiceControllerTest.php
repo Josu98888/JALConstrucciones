@@ -87,4 +87,25 @@ class ServiceControllerTest extends TestCase
             'outstanding' => 1,
         ]);
     }
+
+    #[Test] 
+    public function show() {
+        // preparacion
+        $id = $this->service->id;
+
+        // llamada
+        $response = $this->get('/api/service/' . $id);
+
+        // verificacion
+        $response->assertStatus(200);
+        $response->assertJson([
+            'service' => [
+                'id' => $id,
+                'name' => $this->service->name,
+                'description' => $this->service->description,
+                'outstanding' => $this->service->outstanding,
+            ]
+        ]);
+    }
+    
 }
