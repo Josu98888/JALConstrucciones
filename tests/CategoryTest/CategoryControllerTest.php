@@ -10,12 +10,13 @@ use Tests\TestCase as TestCase;
 use Tests\Traits\CreateUser as TraitsCreateUser;
 use Tests\Traits\CreateCategory as TraitsCreateCategory;
 
-class CategoryControllerTest extends TestCase {
+class CategoryControllerTest extends TestCase
+{
 
     use DatabaseTransactions;
     use TraitsCreateUser;
     use TraitsCreateCategory;
-    
+
     protected $user;
     protected $token;
     protected $category;
@@ -29,7 +30,8 @@ class CategoryControllerTest extends TestCase {
     }
 
     #[Test]
-    public function store() {
+    public function store()
+    {
         // preparacion
         $data = [
             'name' => 'Category Test',
@@ -47,6 +49,31 @@ class CategoryControllerTest extends TestCase {
                 'name' => 'Category Test',
                 'description' => 'Category Test Description',
             ]
+        ]);
+    }
+
+    #[Test]
+    public function update()
+    {
+        // preparacion
+        $data = [
+            'name' => 'Category Test Updated',
+            'description' => 'Category Test Description Updated',
+        ];
+        $id = $this->category->id;
+
+        // llamada
+        $response = $this->withHeaders([
+            'Authorization' => $this->token
+        ])->putJson('/api/category/' . $id, [
+            'json' => json_encode($data)
+        ]);
+
+        // verificacion
+        $response->assertStatus(200);
+        $response->assertJsonFragment([
+            'name' => 'Category Test Updated',
+            'description' => 'Category Test Description Updated',
         ]);
     }
 }
