@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace Tests\CategoryTest;
 
 use Illuminate\Foundation\Testing\DatabaseTransactions;
+use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Storage;
 use PHPUnit\Framework\Attributes\Test;
 use Tests\TestCase as TestCase;
 use Tests\Traits\CreateUser as TraitsCreateUser;
@@ -97,5 +99,23 @@ class CategoryControllerTest extends TestCase
                 ]
             ]
         ]);
+    }
+
+    #[Test]
+    public function getImage() {
+        // preparación 
+        $filename = 'test-image.jpg';
+        $file = UploadedFile::fake()->image($filename);                          // Crea un archivo de imagen falso
+        Storage::disk('public')->putFileAs('categories', $file, $filename);      // Guarda el archivo en el disco público
+
+        // llamada 
+        $response = $this->get("/api/category/getImage/$filename");
+
+        // verificación
+        $response->assertStatus(200);
+        $response->assertHeader('Content-Type', 'image/jpeg');
+
+        // limpieza
+        Storage::disk('public')->delete("categories/{$filename}");
     }
 }
