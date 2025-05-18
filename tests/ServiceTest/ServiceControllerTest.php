@@ -109,6 +109,31 @@ class ServiceControllerTest extends TestCase
         ]);
     }
 
+    #[Test] 
+    public function getServicesByCategory() {
+        // preparacion
+        $idCategory = $this->category->id;
+
+        // llamada
+        $response = $this->getJson("api/services/getServicesByCategory/$idCategory");
+
+        // verificacion
+        $response->assertStatus(200);
+        $response->assertJson([
+            'category' => $this->category->name,
+        ]);
+        $response->assertJsonStructure([
+            'category',
+            'services' => [
+                '*' => [
+                    'id',
+                    'name',
+                    'description',
+                ]
+            ]
+        ]);
+    }
+
     #[Test]
     public function destroy()
     {
@@ -121,7 +146,6 @@ class ServiceControllerTest extends TestCase
         ])->delete('/api/service/delete/' . $id);
 
         // verificacion
-        $response->dump();
         $response->assertStatus(200);
         $response->assertJson([
             'message' => 'Servicio eliminado correctamente.',
