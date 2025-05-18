@@ -80,8 +80,7 @@ class CategoryControllerTest extends TestCase
     }
 
     #[Test]
-    public function index()
-    {
+    public function index() {
         // llamada
         $response = $this->getJson('api/category');
 
@@ -103,8 +102,7 @@ class CategoryControllerTest extends TestCase
     }
 
     #[Test]
-    public function getImage()
-    {
+    public function getImage() {
         // preparación 
         $filename = 'test-image.jpg';
         $file = UploadedFile::fake()->image($filename);                          // Crea un archivo de imagen falso
@@ -121,9 +119,8 @@ class CategoryControllerTest extends TestCase
         Storage::disk('public')->delete("categories/{$filename}");
     }
 
-    #[Test]
-    public function destroy()
-    {
+    #[Test] 
+    public function destroy() {
         // preparación
         $id = $this->category->id;
 
@@ -138,7 +135,7 @@ class CategoryControllerTest extends TestCase
             'message' => 'La categoría ha sido eliminada correctamente.'
         ]);
         $this->assertDatabaseMissing('categories', [
-            'id' => $id
-        ]);
+        'id' => $id
+    ]);
     }
 }

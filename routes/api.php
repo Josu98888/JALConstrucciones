@@ -22,7 +22,7 @@ Route::post('/user/update', [UserController::class, 'update']);
 Route::middleware([ApiAuthMiddleware::class])->group(function () {
     // rutas del service
     Route::post('service/store', [ServiceController::class, 'store']);
-    Route::put('/api/service/update/{id}', [ServiceController::class, 'update']);
+    Route::put('/service/update/{id}', [ServiceController::class, 'update']);
     Route::delete('service/delete/{id}', [ServiceController::class, 'destroy']);
 
     // rutas de categorias

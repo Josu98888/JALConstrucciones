@@ -59,4 +59,32 @@ class ServiceControllerTest extends TestCase
             ]
         ]);
     }
+
+    #[Test]
+    public function update()
+    {
+        // preparacion
+        $id = $this->service->id;
+        $data = [
+            'category_id' => $this->category->id,
+            'name' => 'Service Test Updated',
+            'description' => 'Service Test Description Updated',
+            'outstanding' => 1,
+        ];
+
+        // llamada
+        $response = $this->withHeaders([
+            'Authorization' => $this->token
+        ])->put('/api/service/update/' . $id, [
+            'json' => json_encode($data)
+        ]);
+
+        // verificacion
+        $response->assertStatus(200);
+        $response->assertJsonFragment([
+            'name' => 'Service Test Updated',
+            'description' => 'Service Test Description Updated',
+            'outstanding' => 1,
+        ]);
+    }
 }
