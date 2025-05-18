@@ -7,7 +7,7 @@ trait CreateCategory
 {
     public function createCategory(): Category
     {
-        $category = Category::factory()->create([
+        $category = Category::create([
             'name' => 'Test Category',
             'description' => 'Test Description',
             'image' => 'null'
