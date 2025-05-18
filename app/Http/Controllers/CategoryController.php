@@ -168,6 +168,7 @@ class CategoryController extends Controller
             $data = [                                                            // Preparamos la respuesta indicando que la eliminación fue exitosa
                 'status' => 'success',
                 'code' => 200,
+                'message' => 'La categoría ha sido eliminada correctamente.',
                 'categorie' => $category
             ];
         } else {                                                                 // Si la categoría no existe, enviamos un mensaje de error
