@@ -17,6 +17,9 @@
         <testsuite name="CategoryTest">
             <directory>tests/CategoryTest</directory>
         </testsuite>
+        <testsuite name="ServiceTest">
+            <directory>tests/ServiceTest</directory>
+        </testsuite>
     </testsuites>
     <source>
         <include>
