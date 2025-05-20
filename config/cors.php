@@ -2,11 +2,11 @@
 
 return [
 
-    'paths' => ['api/*', 'sanctum/csrf-cookie', 'apiservices/*'],
+    'paths' => ['api/*', 'sanctum/csrf-cookie', 'apiservices/*','storage/public*'],
 
     'allowed_methods' => ['*'],
 
-    'allowed_origins' => ['https://frontend-jal-construcciones-ba8c.vercel.app/'],
+    'allowed_origins' => ['https://frontend-jal-construcciones-ba8c.vercel.app/', 'https://frontend-jal-construcciones-ba8c.vercel.app/'],
 
     'allowed_origins_patterns' => [],
 
