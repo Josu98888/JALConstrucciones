@@ -85,7 +85,6 @@ class CategoryControllerTest extends TestCase
         $response = $this->getJson('api/category');
 
         // verificacion
-        $response->dump();
         $response->assertStatus(200);
         $response->assertJsonStructure([
             'categories' => [
