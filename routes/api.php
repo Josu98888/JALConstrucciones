@@ -26,7 +26,7 @@ Route::middleware([ApiAuthMiddleware::class])->group(function () {
     Route::delete('/service/delete/{id}', [ServiceController::class, 'destroy']);
 
     // rutas de categorias
-    Route::resource('/category', CategoryController::class);
+    Route::resource('api/category', CategoryController::class);
     Route::post('/category/update/{id}', [CategoryController::class, 'update']);
     Route::get('/category', [CategoryController::class, 'index'])->withoutMiddleware([ApiAuthMiddleware::class]);
 
