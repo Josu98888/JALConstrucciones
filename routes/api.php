@@ -21,9 +21,9 @@ Route::post('/user/update', [UserController::class, 'update']);
 //Rutas con el middleware de autenticación
 Route::middleware([ApiAuthMiddleware::class])->group(function () {
     // rutas del service
-    Route::post('service/store', [ServiceController::class, 'store']);
+    Route::post('/service/store', [ServiceController::class, 'store']);
     Route::put('/service/update/{id}', [ServiceController::class, 'update']);
-    Route::delete('service/delete/{id}', [ServiceController::class, 'destroy']);
+    Route::delete('/service/delete/{id}', [ServiceController::class, 'destroy']);
 
     // rutas de categorias
     Route::resource('/category', CategoryController::class);
@@ -31,7 +31,7 @@ Route::middleware([ApiAuthMiddleware::class])->group(function () {
     Route::get('/category', [CategoryController::class, 'index'])->withoutMiddleware([ApiAuthMiddleware::class]);
 
     // Rutas de las imagenes
-    Route::post('image/store', [ImageController::class, 'store']);
+    Route::post('/image/store', [ImageController::class, 'store']);
     Route::post('/api/image/update/{id}', [ImageController::class, 'update']);
     Route::delete('/api/image/delete/{id}', [ImageController::class, 'destroy']);
 
