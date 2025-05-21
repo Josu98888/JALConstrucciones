@@ -13,36 +13,36 @@ Route::get('/user', function (Request $request) {
 })->middleware('auth:sanctum');
 
 // Rutas de user
-Route::post('/login', [UserController::class, 'login']);
-Route::get('/user/avatar/{filename}', [UserController::class, 'getImage']);
-Route::get('/user/detail/{id}', [UserController::class, 'detail']);
-Route::post('/user/update', [UserController::class, 'update']);
+Route::post('/api/login', [UserController::class, 'login']);
+Route::get('/api/user/avatar/{filename}', [UserController::class, 'getImage']);
+Route::get('/api/user/detail/{id}', [UserController::class, 'detail']);
+Route::post('/api/user/update', [UserController::class, 'update']);
 
 //Rutas con el middleware de autenticación
 Route::middleware([ApiAuthMiddleware::class])->group(function () {
     // rutas del service
-    Route::post('/service/store', [ServiceController::class, 'store']);
-    Route::put('/service/update/{id}', [ServiceController::class, 'update']);
+    Route::post('/api/service/store', [ServiceController::class, 'store']);
+    Route::put('/api/service/update/{id}', [ServiceController::class, 'update']);
     Route::delete('/service/delete/{id}', [ServiceController::class, 'destroy']);
 
     // rutas de categorias
-    Route::resource('/category', CategoryController::class);
-    Route::post('/category/update/{id}', [CategoryController::class, 'update']);
-    Route::get('/category', [CategoryController::class, 'index'])->withoutMiddleware([ApiAuthMiddleware::class]);
+    Route::resource('/api/category', CategoryController::class);
+    Route::post('/api/category/update/{id}', [CategoryController::class, 'update']);
+    Route::get('/api/category', [CategoryController::class, 'index'])->withoutMiddleware([ApiAuthMiddleware::class]);
 
     // Rutas de las imagenes
-    Route::post('/image/store', [ImageController::class, 'store']);
-    Route::post('/api/image/update/{id}', [ImageController::class, 'update']);
-    Route::delete('/api/image/delete/{id}', [ImageController::class, 'destroy']);
+    Route::post('/api/image/store', [ImageController::class, 'store']);
+    Route::post('/api/api/image/update/{id}', [ImageController::class, 'update']);
+    Route::delete('/api/api/image/delete/{id}', [ImageController::class, 'destroy']);
 
 });
 
-Route::get('/category/getImage/{filename}', [CategoryController::class, 'getImage']);
+Route::get('/api/category/getImage/{filename}', [CategoryController::class, 'getImage']);
 
 // rutas del service
-Route::get('/service/{id}', [ServiceController::class, 'show']);
-Route::get('/services/getServicesByCategory/{id}', [ServiceController::class, 'getServicesByCategory']);
-Route::get('/services/outstanding', [ServiceController::class, 'outstanding']);
+Route::get('/api/service/{id}', [ServiceController::class, 'show']);
+Route::get('/api/services/getServicesByCategory/{id}', [ServiceController::class, 'getServicesByCategory']);
+Route::get('/api/services/outstanding', [ServiceController::class, 'outstanding']);
 
 // Ruta de las imagenes
-Route::get('/image/{filename}', [ImageController::class, 'getImage']);
+Route::get('/api/image/{filename}', [ImageController::class, 'getImage']);
